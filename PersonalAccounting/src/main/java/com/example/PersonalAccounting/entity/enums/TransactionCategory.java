@@ -1,4 +1,4 @@
-package com.example.PersonalAccounting.model.enums;
+package com.example.PersonalAccounting.entity.enums;
 
 public enum TransactionCategory {
     CLOTHES_AND_SHOES, GIFTS, ENTERTAINMENT_AND_LEISURE, FINANCIAL_SERVICES, EDUCATION, DWELLING, EXPENSES_FOR_ANIMALS,

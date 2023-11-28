@@ -1,6 +1,6 @@
 package com.example.PersonalAccounting.repositories;
 
-import com.example.PersonalAccounting.model.Transaction;
+import com.example.PersonalAccounting.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

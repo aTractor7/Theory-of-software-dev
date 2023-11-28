@@ -1,6 +1,6 @@
 package com.example.PersonalAccounting.repositories;
 
-import com.example.PersonalAccounting.model.FinancialArrangement;
+import com.example.PersonalAccounting.entity.FinancialArrangement;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

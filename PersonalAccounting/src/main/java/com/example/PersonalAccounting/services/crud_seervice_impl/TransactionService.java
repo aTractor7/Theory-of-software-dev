@@ -1,18 +1,19 @@
-package com.example.PersonalAccounting.services;
+package com.example.PersonalAccounting.services.crud_seervice_impl;
 
-import com.example.PersonalAccounting.model.User;
+import com.example.PersonalAccounting.entity.User;
 import com.example.PersonalAccounting.repositories.TransactionRepository;
-import com.example.PersonalAccounting.model.Transaction;
+import com.example.PersonalAccounting.entity.Transaction;
+import com.example.PersonalAccounting.services.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
-public class TransactionService {
+public class TransactionService implements CrudService<Transaction> {
 
     private final TransactionRepository transactionRepository;
 
@@ -22,11 +23,11 @@ public class TransactionService {
     }
 
     @Transactional
-    public void create(Transaction transaction, User user) {
-        transaction.setUser(user);
+    public void create(Transaction transaction) {
+        User user = transaction.getUser();
         user.addTransaction(transaction);
 
-        userFundsAddTransactions(user, transaction);
+        userFundsAddTransactions(transaction.getUser(), transaction);
 
         transaction.setDateTime(LocalDateTime.now());
         transactionRepository.save(transaction);
@@ -39,9 +40,8 @@ public class TransactionService {
 
     @Transactional(readOnly = true)
     public Transaction getOne(int id) {
-
         return transactionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No transaction with such id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("No transaction with such id: " + id));
     }
 
     @Transactional
@@ -58,7 +58,7 @@ public class TransactionService {
             t.setComment(transaction.getComment());
             t.setRefill(transaction.isRefill());
         }, () -> {
-            throw new IllegalArgumentException("No transaction with id: " + id);
+            throw new NoSuchElementException("No transaction with id: " + id);
         });
     }
 

@@ -1,6 +1,6 @@
 package com.example.PersonalAccounting.services;
 
-import com.example.PersonalAccounting.model.User;
+import com.example.PersonalAccounting.entity.User;
 import com.example.PersonalAccounting.repositories.UserRepository;
 import com.example.PersonalAccounting.datails.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;

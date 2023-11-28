@@ -1,6 +1,6 @@
-package com.example.PersonalAccounting.model;
+package com.example.PersonalAccounting.entity;
 
-import com.example.PersonalAccounting.model.enums.TransactionCategory;
+import com.example.PersonalAccounting.entity.enums.TransactionCategory;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "transaction")
-public class Transaction {
+public class Transaction implements Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,4 +48,26 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    public boolean isEmpty() {
+        return sum == 0 || category == null;
+    }
+
+    @Override
+    public Transaction clone() {
+
+        try {
+            Transaction clone = (Transaction) super.clone();
+            clone.setSum(sum);
+            clone.setDateTime(dateTime);
+            clone.setCategory(category);
+            clone.setRefill(refill);
+            clone.setComment(comment);
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
+
 }

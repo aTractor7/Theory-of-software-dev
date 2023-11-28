@@ -1,7 +1,7 @@
-package com.example.PersonalAccounting.model;
+package com.example.PersonalAccounting.entity;
 
-import com.example.PersonalAccounting.model.enums.FinancialArrangementState;
-import com.example.PersonalAccounting.model.enums.Status;
+import com.example.PersonalAccounting.entity.enums.Status;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -12,13 +12,13 @@ import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 
-@NoArgsConstructor
 @AllArgsConstructor
-@Getter
+@NoArgsConstructor
 @Setter
+@Getter
 @Entity
-@Table(name = "financial_arrangement")
-public class FinancialArrangement {
+@Table(name = "accumulation")
+public class Accumulation{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,22 +30,18 @@ public class FinancialArrangement {
     @Column(name = "name")
     private String name;
 
-    @Min(value = 0, message = "Rate should be greater then 0")
-    @Column(name = "percent")
-    private int percent;
-
-    @Min(value = 0, message = "Current sum should be greater then 0")
-    @Column(name = "start_sum")
-    private int startSum;
+    @Length(max = 150, message = "Comment should be less then 150 characters")
+    @Column(name = "comment")
+    private String comment;
 
     @Min(value = 0, message = "Current sum should be greater then 0")
     @Column(name = "current_sum")
     private int currentSum;
 
-    @Transient
-    private int refundSum;
+    @Min(value = 0, message = "Goal sum should be greater then 0")
+    @Column(name = "goal_sum")
+    private int goalSum;
 
-    @FutureOrPresent
     @Temporal(TemporalType.DATE)
     @Column(name = "start_date")
     private LocalDate startDate;
@@ -55,9 +51,9 @@ public class FinancialArrangement {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "state")
-    private FinancialArrangementState state;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "last_payment_date")
+    private LocalDate lastPaymentDate;
 
     @NotNull
     @Enumerated(EnumType.ORDINAL)

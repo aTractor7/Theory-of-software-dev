@@ -1,4 +1,4 @@
-package com.example.PersonalAccounting.model;
+package com.example.PersonalAccounting.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
