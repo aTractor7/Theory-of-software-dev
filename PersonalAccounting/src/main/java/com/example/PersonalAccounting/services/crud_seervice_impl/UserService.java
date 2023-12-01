@@ -24,11 +24,11 @@ public class UserService implements CrudService<User> {
     }
 
     @Transactional
-    public void create(User user) {
+    public User create(User user) {
         if(userRepository.findByEmail(user.getEmail()).isEmpty()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRole("ROLE_USER");
-            userRepository.save(user);
+            return userRepository.save(user);
         }else {
             throw new IllegalArgumentException("User with this email is already exist.");
         }
@@ -52,7 +52,7 @@ public class UserService implements CrudService<User> {
     }
 
     @Transactional
-    public void update(int id, User user) {
+    public User update(int id, User user) {
         userRepository.findById(id).ifPresentOrElse((u) -> {
             u.setEmail(user.getEmail());
             u.setName(user.getName());
@@ -60,6 +60,7 @@ public class UserService implements CrudService<User> {
         }, () -> {
             throw new NoSuchElementException("No user with id: " + id);
         });
+        return getOne(id);
     }
 
     @Transactional

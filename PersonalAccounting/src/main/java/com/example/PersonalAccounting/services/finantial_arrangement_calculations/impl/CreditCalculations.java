@@ -76,23 +76,5 @@ public class CreditCalculations implements FinancialArrangementCalculations {
         return transaction;
     }
 
-    @Override
-    public Transaction createStartTransaction(FinancialArrangement financialArrangement, User user) {
-        Transaction transaction = new Transaction();
-
-        if(financialArrangement.isFromToUserFunds()) {
-            transaction.setSum(financialArrangement.getStartSum());
-            transaction.setUser(user);
-            transaction.setRefill(true);
-            transaction.setComment("Credit money");
-            transaction.setCategory(TransactionCategory.FINANCIAL_SERVICES);
-        }
-        return transaction;
-    }
-
-    @Override
-    public Transaction createEndTransaction(FinancialArrangement arrangement, User user) {
-        return new Transaction();
-    }
 
 }

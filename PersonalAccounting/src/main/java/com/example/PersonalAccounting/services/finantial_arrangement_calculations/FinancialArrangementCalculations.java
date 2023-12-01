@@ -7,7 +7,7 @@ import com.example.PersonalAccounting.entity.enums.FinancialArrangementState;
 
 import java.time.LocalDate;
 
-public interface FinancialArrangementCalculations {
+public interface FinancialArrangementCalculations extends StateClass{
 
     void makePayment(FinancialArrangement arrangement);
 
@@ -23,11 +23,5 @@ public interface FinancialArrangementCalculations {
 
     int timeLineBetweenDates(LocalDate start, LocalDate end);
 
-    FinancialArrangementState operatedState();
-
     Transaction createPaymentTransaction(FinancialArrangement arrangement, User user);
-
-    Transaction createStartTransaction(FinancialArrangement financialArrangement, User user);
-
-    Transaction createEndTransaction(FinancialArrangement financialArrangement, User user);
 }

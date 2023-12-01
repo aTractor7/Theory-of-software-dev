@@ -1,8 +1,11 @@
 package com.example.PersonalAccounting;
 
+import com.example.PersonalAccounting.services.finantial_arrangement_calculations.FinancialArrangementStartEndTransactionCreator;
 import com.example.PersonalAccounting.services.finantial_arrangement_calculations.impl.CreditCalculations;
+import com.example.PersonalAccounting.services.finantial_arrangement_calculations.impl.CreditStartEndTransactionCreator;
 import com.example.PersonalAccounting.services.finantial_arrangement_calculations.impl.DepositCalculations;
 import com.example.PersonalAccounting.services.finantial_arrangement_calculations.FinancialArrangementCalculations;
+import com.example.PersonalAccounting.services.finantial_arrangement_calculations.impl.DepositStartEndTransactionCreator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -22,6 +25,13 @@ public class PersonalAccountingApplication {
 	@Autowired
 	public List<FinancialArrangementCalculations> financialArrangementCalculationsList(CreditCalculations credit,
 																					   DepositCalculations deposit) {
+		return List.of(credit, deposit);
+	}
+
+	@Bean
+	@Autowired
+	public List<FinancialArrangementStartEndTransactionCreator> financialArrangementTransactionCreatorList(CreditStartEndTransactionCreator credit,
+																										   DepositStartEndTransactionCreator deposit) {
 		return List.of(credit, deposit);
 	}
 

@@ -33,14 +33,14 @@ public class AccumulationService implements CrudService<Accumulation> {
     }
 
     @Transactional
-    public void create(Accumulation accumulation) {
+    public Accumulation create(Accumulation accumulation) {
         User user = accumulation.getUser();
         user.addAccumulation(accumulation);
 
         accumulation.setStartDate(LocalDate.now());
         accumulation.setLastPaymentDate(LocalDate.now());
         accumulation.setStatus(Status.ACTIVE);
-        accumulationRepository.save(accumulation);
+        return accumulationRepository.save(accumulation);
     }
 
     @Transactional(readOnly = true)
@@ -61,7 +61,7 @@ public class AccumulationService implements CrudService<Accumulation> {
     }
 
     @Transactional
-    public void update(int id, Accumulation accumulation) {
+    public Accumulation update(int id, Accumulation accumulation) {
         accumulationRepository.findById(id).ifPresentOrElse(a -> {
             a.setName(accumulation.getName());
             a.setCurrentSum(accumulation.getCurrentSum());
@@ -77,6 +77,7 @@ public class AccumulationService implements CrudService<Accumulation> {
         }, () -> {
             throw new NoSuchElementException("No accumulation with id: " + id);
         });
+        return getOne(id);
     }
 
     @Transactional
@@ -85,7 +86,7 @@ public class AccumulationService implements CrudService<Accumulation> {
     }
 
     @Transactional
-    public void makePayment(int id, Transaction transaction) {
+    public Accumulation makePayment(int id, Transaction transaction) {
         //TODO: write logs
         Accumulation accumulation = getOne(id);
         if(accumulation.getStatus().equals(Status.EXECUTED))
@@ -99,11 +100,11 @@ public class AccumulationService implements CrudService<Accumulation> {
 
         makePaymentCalculations(accumulation, transaction);
         transactionService.create(transaction);
-        update(id, accumulation);
+        return update(id, accumulation);
     }
 
     @Transactional
-    public void closeAccumulation(int id) {
+    public Accumulation closeAccumulation(int id) {
         //TODO: write logs
         Accumulation accumulation = getOne(id);
         if (accumulation.getCurrentSum() == 0 && accumulation.getStatus().equals(Status.EXECUTED))
@@ -113,8 +114,8 @@ public class AccumulationService implements CrudService<Accumulation> {
         Transaction transaction = makeAccumulationCloseTransaction(accumulation.getCurrentSum(), accumulation.getUser());
         accumulation.setCurrentSum(0);
 
-        update(id, accumulation);
         transactionService.create(transaction);
+        return update(id, accumulation);
     }
 
     private Transaction makeAccumulationCloseTransaction(int sum, User user) {

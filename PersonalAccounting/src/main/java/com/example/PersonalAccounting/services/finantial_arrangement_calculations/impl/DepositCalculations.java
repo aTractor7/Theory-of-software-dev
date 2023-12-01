@@ -73,31 +73,5 @@ public class DepositCalculations implements FinancialArrangementCalculations {
         return new Transaction();
     }
 
-    @Override
-    public Transaction createStartTransaction(FinancialArrangement financialArrangement, User user) {
-        Transaction transaction = new Transaction();
 
-        if(financialArrangement.isFromToUserFunds()) {
-            transaction.setSum(financialArrangement.getStartSum());
-            transaction.setUser(user);
-            transaction.setRefill(false);
-            transaction.setComment("Make a deposit");
-            transaction.setCategory(TransactionCategory.FINANCIAL_SERVICES);
-        }
-        return transaction;
-    }
-
-    @Override
-    public Transaction createEndTransaction(FinancialArrangement financialArrangement, User user) {
-        Transaction transaction = new Transaction();
-
-        if(financialArrangement.isFromToUserFunds()) {
-            transaction.setSum(financialArrangement.getCurrentSum());
-            transaction.setUser(user);
-            transaction.setRefill(true);
-            transaction.setComment("Money from deposit");
-            transaction.setCategory(TransactionCategory.FINANCIAL_SERVICES);
-        }
-        return transaction;
-    }
 }
