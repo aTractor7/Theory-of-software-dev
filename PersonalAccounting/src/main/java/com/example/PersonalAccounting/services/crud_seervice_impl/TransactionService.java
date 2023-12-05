@@ -39,6 +39,9 @@ public class TransactionService implements CrudService<Transaction> {
     }
 
     @Transactional(readOnly = true)
+    public List<Transaction> getAll(User user) {return transactionRepository.findByUser(user);}
+
+    @Transactional(readOnly = true)
     public Transaction getOne(int id) {
         return transactionRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No transaction with such id: " + id));
@@ -60,7 +63,7 @@ public class TransactionService implements CrudService<Transaction> {
         }, () -> {
             throw new NoSuchElementException("No transaction with id: " + id);
         });
-        return getOne(id);
+        return transaction;
     }
 
     @Transactional

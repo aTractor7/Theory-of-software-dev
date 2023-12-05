@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class FinancialArrangementService implements CrudService<FinancialArrangement> {
@@ -52,6 +54,28 @@ public class FinancialArrangementService implements CrudService<FinancialArrange
     }
 
     @Transactional(readOnly = true)
+    public List<FinancialArrangement> getAll(User user) {
+        List<FinancialArrangement> arrangements = financialArrangementRepository.findByUser(user);
+        if (arrangements.isEmpty()) return arrangements;
+
+        arrangements = arrangements.stream()
+                .sorted(Comparator.comparing(FinancialArrangement::getState))
+                .collect(Collectors.toList());
+
+        FinancialArrangementCalculations calculations = getCalculationsByState(arrangements.get(0).getState());
+        for(FinancialArrangement arrangement :arrangements){
+            if(arrangement.getState() != calculations.operatedState()) {
+                calculations = getCalculationsByState(arrangement.getState());
+            }
+
+            arrangement.setRefundSum(calculations.calculateRefundSum(arrangement));
+            if(calculations.isOutOfDate(arrangement)) arrangement.setStatus(Status.OVERDUE);
+        }
+
+        return financialArrangementRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
     public FinancialArrangement getOne(int id) {
         FinancialArrangement arrangement = getOneNoCalculation(id);
 
@@ -60,10 +84,10 @@ public class FinancialArrangementService implements CrudService<FinancialArrange
 
         arrangement.setRefundSum(calculations.calculateRefundSum(arrangement));
         if(calculations.isOutOfDate(arrangement)) arrangement.setStatus(Status.OVERDUE);
-        else arrangement.setStatus(Status.ACTIVE);
 
         return arrangement;
     }
+
 
     private FinancialArrangement getOneNoCalculation(int id){
         return financialArrangementRepository.findById(id)
@@ -99,8 +123,9 @@ public class FinancialArrangementService implements CrudService<FinancialArrange
 
     @Transactional
     public FinancialArrangement makePayment(int id) {
-        //TODO:Write logs
         FinancialArrangement financialArrangement = getOneNoCalculation(id);
+        if(financialArrangement.getUser() == null)
+            throw new PaymentException("Financial arrangement with no foreign key");
 
         if(financialArrangement.getStatus().equals(Status.EXECUTED))
             throw new PaymentException("Financial arrangement  is executed");

@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-@Slf4j
 public class AccumulationService implements CrudService<Accumulation> {
 
     private final AccumulationRepository accumulationRepository;
@@ -49,6 +48,16 @@ public class AccumulationService implements CrudService<Accumulation> {
     }
 
     @Transactional(readOnly = true)
+    public List<Accumulation> getAll(User user) {
+        List<Accumulation> accumulations = accumulationRepository.findByUser(user);
+
+        for(Accumulation accumulation :accumulations) {
+            if(isOverdue(accumulation)) accumulation.setStatus(Status.OVERDUE);
+        }
+        return accumulations;
+    }
+
+    @Transactional(readOnly = true)
     public Accumulation getOne(int id) {
         Accumulation accumulation = getOneNoCalculation(id);
         if(isOverdue(accumulation)) accumulation.setStatus(Status.OVERDUE);
@@ -72,12 +81,12 @@ public class AccumulationService implements CrudService<Accumulation> {
             if(accumulation.getStatus() != null)
                 a.setStatus(accumulation.getStatus());
             else {
-                a.setStatus(Status.ACTIVE);
+                if(a.getStatus() == null) a.setStatus(Status.ACTIVE);
             }
         }, () -> {
             throw new NoSuchElementException("No accumulation with id: " + id);
         });
-        return getOne(id);
+        return accumulation;
     }
 
     @Transactional
@@ -87,7 +96,6 @@ public class AccumulationService implements CrudService<Accumulation> {
 
     @Transactional
     public Accumulation makePayment(int id, Transaction transaction) {
-        //TODO: write logs
         Accumulation accumulation = getOne(id);
         if(accumulation.getStatus().equals(Status.EXECUTED))
             throw new PaymentException("Accumulation is executed");
@@ -105,7 +113,6 @@ public class AccumulationService implements CrudService<Accumulation> {
 
     @Transactional
     public Accumulation closeAccumulation(int id) {
-        //TODO: write logs
         Accumulation accumulation = getOne(id);
         if (accumulation.getCurrentSum() == 0 && accumulation.getStatus().equals(Status.EXECUTED))
             throw new PaymentException("Accumulation is already closed");
@@ -137,6 +144,8 @@ public class AccumulationService implements CrudService<Accumulation> {
     }
 
     private boolean isOverdue(Accumulation accumulation) {
+        if(accumulation.getLastPaymentDate() == null) return false;
+
         long monthFromLastPayment = ChronoUnit.MONTHS.between(accumulation.getLastPaymentDate(), LocalDate.now());
         return monthFromLastPayment > 1;
     }

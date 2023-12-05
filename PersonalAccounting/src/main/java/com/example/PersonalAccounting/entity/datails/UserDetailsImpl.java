@@ -1,4 +1,4 @@
-package com.example.PersonalAccounting.datails;
+package com.example.PersonalAccounting.entity.datails;
 
 import com.example.PersonalAccounting.entity.User;
 import org.springframework.security.core.GrantedAuthority;

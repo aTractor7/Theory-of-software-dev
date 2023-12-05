@@ -51,6 +51,7 @@ public class Accumulation{
     @Column(name = "end_date")
     private LocalDate endDate;
 
+    @Nullable
     @Temporal(TemporalType.DATE)
     @Column(name = "last_payment_date")
     private LocalDate lastPaymentDate;
