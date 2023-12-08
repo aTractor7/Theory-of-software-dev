@@ -2,7 +2,7 @@ package com.example.PersonalAccounting.controllers;
 
 import com.example.PersonalAccounting.dto.UserDTO;
 import com.example.PersonalAccounting.entity.User;
-import com.example.PersonalAccounting.services.crud_seervice_impl.UserService;
+import com.example.PersonalAccounting.services.entity_service_impl.UserService;
 import com.example.PersonalAccounting.util.ErrorResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
