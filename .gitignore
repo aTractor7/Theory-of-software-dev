@@ -1,10 +1,8 @@
-PersonalAccounting/HELP.md
-PersonalAccounting/target/
+FileWorckMicroservice/HELP.md
+FileWorckMicroservice/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-PersonalAccounting/src/main/resources/application.properties
-PersonalAccounting/statistics_file/
 
 ### STS ###
 .apt_generated
