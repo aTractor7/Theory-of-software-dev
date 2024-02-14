@@ -1,7 +1,10 @@
 package com.example.PersonalAccounting.services.finantial_arrangement_calculations.impl;
 
-import com.example.PersonalAccounting.model.FinancialArrangement;
-import com.example.PersonalAccounting.model.enums.FinancialArrangementState;
+import com.example.PersonalAccounting.entity.FinancialArrangement;
+import com.example.PersonalAccounting.entity.Transaction;
+import com.example.PersonalAccounting.entity.User;
+import com.example.PersonalAccounting.entity.enums.FinancialArrangementState;
+import com.example.PersonalAccounting.entity.enums.TransactionCategory;
 import com.example.PersonalAccounting.services.finantial_arrangement_calculations.FinancialArrangementCalculations;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +34,9 @@ public class CreditCalculations implements FinancialArrangementCalculations {
     public int calculatePaymentSumByTimeLine(FinancialArrangement arrangement) {
         int paymentsNum = timeLineBetweenDates(
                 arrangement.getStartDate(), arrangement.getEndDate());
-        return (calculateRefundSum(arrangement) - arrangement.getStartSum()) / paymentsNum;
+        int ceilSum = (int) Math.ceil(calculateRefundSum(arrangement) * 1.0 / paymentsNum);
+
+        return Math.min(arrangement.getCurrentSum(), ceilSum);
     }
 
     @Override
@@ -60,5 +65,34 @@ public class CreditCalculations implements FinancialArrangementCalculations {
         return FinancialArrangementState.CREDIT;
     }
 
+    @Override
+    public Transaction createPaymentTransaction(FinancialArrangement arrangement, User user) {
+        Transaction transaction = new Transaction();
+        transaction.setSum(calculatePaymentSumByTimeLine(arrangement));
+        transaction.setUser(user);
+        transaction.setRefill(false);
+        transaction.setComment("Credit payment");
+        transaction.setCategory(TransactionCategory.FINANCIAL_SERVICES);
+        return transaction;
+    }
+
+    @Override
+    public Transaction createStartTransaction(FinancialArrangement financialArrangement, User user) {
+        Transaction transaction = new Transaction();
+
+        if(financialArrangement.isFromToUserFunds()) {
+            transaction.setSum(financialArrangement.getStartSum());
+            transaction.setUser(user);
+            transaction.setRefill(true);
+            transaction.setComment("Credit money");
+            transaction.setCategory(TransactionCategory.FINANCIAL_SERVICES);
+        }
+        return transaction;
+    }
+
+    @Override
+    public Transaction createEndTransaction(FinancialArrangement arrangement, User user) {
+        return new Transaction();
+    }
 
 }

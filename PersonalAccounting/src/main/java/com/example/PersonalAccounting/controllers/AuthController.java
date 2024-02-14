@@ -1,8 +1,8 @@
 package com.example.PersonalAccounting.controllers;
 
 import com.example.PersonalAccounting.dto.UserDTO;
-import com.example.PersonalAccounting.model.User;
-import com.example.PersonalAccounting.services.UserService;
+import com.example.PersonalAccounting.entity.User;
+import com.example.PersonalAccounting.services.crud_seervice_impl.UserService;
 import com.example.PersonalAccounting.util.ErrorResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ public class AuthController {
         }
 
         User user = convertToUser(userDTO);
-        userService.register(user);
+        userService.create(user);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

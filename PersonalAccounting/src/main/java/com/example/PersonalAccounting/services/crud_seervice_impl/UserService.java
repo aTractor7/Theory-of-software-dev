@@ -1,18 +1,18 @@
-package com.example.PersonalAccounting.services;
+package com.example.PersonalAccounting.services.crud_seervice_impl;
 
-import com.example.PersonalAccounting.model.User;
+import com.example.PersonalAccounting.entity.User;
 import com.example.PersonalAccounting.repositories.UserRepository;
+import com.example.PersonalAccounting.services.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
-@Transactional(readOnly = true)
-public class UserService {
+public class UserService implements CrudService<User> {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -24,7 +24,7 @@ public class UserService {
     }
 
     @Transactional
-    public void register(User user) {
+    public void create(User user) {
         if(userRepository.findByEmail(user.getEmail()).isEmpty()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRole("ROLE_USER");
@@ -34,18 +34,21 @@ public class UserService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<User> getAll() {
         return userRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public User getOne(int id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("No user with such id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("No user with such id: " + id));
     }
 
+    @Transactional(readOnly = true)
     public User getOne(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("No user with such email: " + email));
+                .orElseThrow(() -> new NoSuchElementException("No user with such email: " + email));
     }
 
     @Transactional
@@ -55,7 +58,7 @@ public class UserService {
             u.setName(user.getName());
             u.setFunds(user.getFunds());
         }, () -> {
-            throw new IllegalArgumentException("No user with id: " + id);
+            throw new NoSuchElementException("No user with id: " + id);
         });
     }
 
