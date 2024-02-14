@@ -4,6 +4,7 @@ PersonalAccounting/target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 PersonalAccounting/src/main/resources/application.properties
+PersonalAccounting/statistics_file/
 
 ### STS ###
 .apt_generated

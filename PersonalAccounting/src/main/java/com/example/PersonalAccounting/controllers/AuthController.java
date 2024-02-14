@@ -18,6 +18,8 @@ import static com.example.PersonalAccounting.util.ErrorsUtil.generateErrorMessag
 @RequestMapping("/auth")
 public class AuthController {
 
+    //TODO: add validator that will check user email unique
+
     private final UserService userService;
     private final ModelMapper modelMapper;
 

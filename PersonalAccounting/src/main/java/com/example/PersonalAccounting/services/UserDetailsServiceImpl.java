@@ -2,7 +2,7 @@ package com.example.PersonalAccounting.services;
 
 import com.example.PersonalAccounting.entity.User;
 import com.example.PersonalAccounting.repositories.UserRepository;
-import com.example.PersonalAccounting.datails.UserDetailsImpl;
+import com.example.PersonalAccounting.entity.datails.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

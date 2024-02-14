@@ -4,7 +4,6 @@ import com.example.PersonalAccounting.entity.FinancialArrangement;
 import com.example.PersonalAccounting.entity.Transaction;
 import com.example.PersonalAccounting.entity.User;
 import com.example.PersonalAccounting.entity.enums.FinancialArrangementState;
-import com.example.PersonalAccounting.entity.enums.TransactionCategory;
 import com.example.PersonalAccounting.services.finantial_arrangement_calculations.FinancialArrangementCalculations;
 import org.springframework.stereotype.Component;
 

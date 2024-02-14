@@ -49,13 +49,13 @@ public class FinancialArrangement {
     @Column(name = "start_date")
     private LocalDate startDate;
 
-    @Column(name = "from_to_user_funds")
-    private boolean fromToUserFunds;
-
     //Add only in dto@Future
     @Temporal(TemporalType.DATE)
     @Column(name = "end_date")
     private LocalDate endDate;
+
+    @Column(name = "from_to_user_funds")
+    private boolean fromToUserFunds;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "state")
