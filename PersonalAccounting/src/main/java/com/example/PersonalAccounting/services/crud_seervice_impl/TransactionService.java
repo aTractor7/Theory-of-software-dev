@@ -23,14 +23,14 @@ public class TransactionService implements CrudService<Transaction> {
     }
 
     @Transactional
-    public void create(Transaction transaction) {
+    public Transaction create(Transaction transaction) {
         User user = transaction.getUser();
         user.addTransaction(transaction);
 
         userFundsAddTransactions(transaction.getUser(), transaction);
 
         transaction.setDateTime(LocalDateTime.now());
-        transactionRepository.save(transaction);
+        return transactionRepository.save(transaction);
     }
 
     @Transactional(readOnly = true)
@@ -45,7 +45,7 @@ public class TransactionService implements CrudService<Transaction> {
     }
 
     @Transactional
-    public void update(int id, Transaction transaction) {
+    public Transaction update(int id, Transaction transaction) {
         transactionRepository.findById(id).ifPresentOrElse(t -> {
             User user = t.getUser();
 
@@ -60,6 +60,7 @@ public class TransactionService implements CrudService<Transaction> {
         }, () -> {
             throw new NoSuchElementException("No transaction with id: " + id);
         });
+        return getOne(id);
     }
 
     @Transactional

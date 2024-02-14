@@ -32,24 +32,18 @@ public class FinancialArrangementService implements CrudService<FinancialArrange
         this.financialArrangementCalculationsList = financialArrangementCalculationsList;
     }
 
-
-    //TODO: add bool param that will be tell make or no make transaction while creation or executing arrangement
-
     @Transactional
-    public void create(FinancialArrangement financialArrangement) {
+    public FinancialArrangement create(FinancialArrangement financialArrangement) {
         User user = financialArrangement.getUser();
         user.addFinancialArrangement(financialArrangement);
 
         //TODO: find a prettier way to choose FinancialArrangementCalculations
         FinancialArrangementCalculations calculations = getCalculationsByState(financialArrangement.getState());
 
-        Transaction transaction =
-                calculations.createStartTransaction(financialArrangement, financialArrangement.getUser());
-        if (!transaction.isEmpty()) transactionService.create(transaction);
         financialArrangement.setCurrentSum(calculations.calculateCurrentSumInitValue(financialArrangement));
         financialArrangement.setStartDate(LocalDate.now());
         financialArrangement.setStatus(Status.ACTIVE);
-        financialArrangementRepository.save(financialArrangement);
+        return financialArrangementRepository.save(financialArrangement);
     }
 
     @Transactional(readOnly = true)
@@ -77,21 +71,25 @@ public class FinancialArrangementService implements CrudService<FinancialArrange
     }
 
     @Transactional
-    public void update(int id, FinancialArrangement financialArrangement) throws IllegalArgumentException{
+    public FinancialArrangement update(int id, FinancialArrangement financialArrangement) throws IllegalArgumentException{
+
         financialArrangementRepository.findById(id).ifPresentOrElse(fa ->
         {
             fa.setName(financialArrangement.getName());
+            fa.setStatus(Status.EXECUTED);
             fa.setCurrentSum(financialArrangement.getCurrentSum());
             fa.setPercent(financialArrangement.getPercent());
             fa.setEndDate(financialArrangement.getEndDate());
             if(financialArrangement.getStatus() != null) {
                 fa.setStatus(financialArrangement.getStatus());
             } else {
-                fa.setStatus(Status.ACTIVE);
+                if(fa.getStatus() == null)
+                    fa.setStatus(Status.ACTIVE);
             }
         }, () -> {
             throw new NoSuchElementException("Invalid id: " + id);
         });
+        return financialArrangement;
     }
 
     @Transactional
@@ -100,7 +98,7 @@ public class FinancialArrangementService implements CrudService<FinancialArrange
     }
 
     @Transactional
-    public void makePayment(int id) {
+    public FinancialArrangement makePayment(int id) {
         //TODO:Write logs
         FinancialArrangement financialArrangement = getOneNoCalculation(id);
 
@@ -115,15 +113,11 @@ public class FinancialArrangementService implements CrudService<FinancialArrange
                 financialArrangement.getUser());
         if(!paymentTransaction.isEmpty())
             transactionService.create(paymentTransaction);
-        if(calculations.isFullyRepaid(financialArrangement)) {
-            Transaction endTransaction =
-                    calculations.createEndTransaction(financialArrangement, financialArrangement.getUser());
-            if(!endTransaction.isEmpty())
-                transactionService.create(endTransaction);
-            financialArrangement.setStatus(Status.EXECUTED);
-        }
 
-        update(id, financialArrangement);
+        if(calculations.isFullyRepaid(financialArrangement))
+            financialArrangement.setStatus(Status.EXECUTED);
+
+        return update(id, financialArrangement);
     }
 
     private FinancialArrangementCalculations getCalculationsByState(FinancialArrangementState state)
