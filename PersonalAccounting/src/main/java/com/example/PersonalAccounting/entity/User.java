@@ -75,4 +75,8 @@ public class User {
             financialArrangements.add(financialArrangement);
         }
     }
+
+    public User(int id) {
+        this.id = id;
+    }
 }

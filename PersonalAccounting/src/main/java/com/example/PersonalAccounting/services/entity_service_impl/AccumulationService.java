@@ -1,4 +1,4 @@
-package com.example.PersonalAccounting.services.crud_seervice_impl;
+package com.example.PersonalAccounting.services.entity_service_impl;
 
 import com.example.PersonalAccounting.entity.Accumulation;
 import com.example.PersonalAccounting.entity.Transaction;
@@ -8,7 +8,6 @@ import com.example.PersonalAccounting.entity.enums.TransactionCategory;
 import com.example.PersonalAccounting.repositories.AccumulationRepository;
 import com.example.PersonalAccounting.services.CrudService;
 import com.example.PersonalAccounting.util.exceptions.PaymentException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

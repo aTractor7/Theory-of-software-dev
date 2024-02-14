@@ -1,12 +1,13 @@
-package com.example.PersonalAccounting.services.crud_seervice_impl;
+package com.example.PersonalAccounting.services.entity_service_impl;
 
 import com.example.PersonalAccounting.entity.FinancialArrangement;
-import com.example.PersonalAccounting.entity.enums.FinancialArrangementState;
 import com.example.PersonalAccounting.services.CrudService;
 
 import java.util.List;
 
 public abstract class AbstractFinancialArrangementServiceDecorator implements CrudService<FinancialArrangement> {
+
+    //TODO: change next field to CrudService<FA> for multiple decorator
     protected final FinancialArrangementService financialArrangementService;
 
     public AbstractFinancialArrangementServiceDecorator(FinancialArrangementService financialArrangementService) {

@@ -1,4 +1,4 @@
-package com.example.PersonalAccounting.services.crud_seervice_impl;
+package com.example.PersonalAccounting.services.entity_service_impl;
 
 import com.example.PersonalAccounting.entity.User;
 import com.example.PersonalAccounting.repositories.TransactionRepository;

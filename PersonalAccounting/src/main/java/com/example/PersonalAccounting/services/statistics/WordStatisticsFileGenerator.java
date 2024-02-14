@@ -3,7 +3,6 @@ package com.example.PersonalAccounting.services.statistics;
 import com.example.PersonalAccounting.entity.Accumulation;
 import com.example.PersonalAccounting.entity.FinancialArrangement;
 import com.example.PersonalAccounting.entity.Transaction;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.File;
